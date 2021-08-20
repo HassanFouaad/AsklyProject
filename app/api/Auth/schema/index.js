@@ -2,7 +2,8 @@ const Joi = require('joi')
 
 exports.signUpSchema = {
     firstName: Joi.string().required(),
-    lastName: Joi.string().required(),
+    lastname: Joi.string().required(),
+    username: Joi.string().required(),
     about: Joi.string().optional(),
     email: Joi.string().email().required(),
     mobile: Joi.string().required(),

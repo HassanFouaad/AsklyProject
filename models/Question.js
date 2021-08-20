@@ -1,33 +1,85 @@
-const {
-    Schema,
-    model,
-} = require("mongoose");
+module.exports = function (sequelize, DataTypes) {
+  const Question = sequelize.define(
+    "Question",
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
 
-const Question = new Schema({
-    user: {
-        type: Schema.ObjectId,
-        ref: "User",
-        required: true,
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "user",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      askerUserId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: "user",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      text: {
+        type: DataTypes.STRING(5000),
+        allowNull: true,
+      },
+      answer: {
+        type: DataTypes.STRING(50000),
+        allowNull: true,
+      },
+      annonymous: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+      },
+      deletedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     },
-    questionUser: {
-        type: Schema.ObjectId,
-        ref: "User",
-        required: true,
-    },
-    text: {
-        type: String,
-        maxLength: 5000,
-    },
-    answer: {
-        type: String,
-        maxLength: 50000,
-    },
-    annonymous: {
-        type: Boolean,
-        maxLength: 50000,
+    {
+      tableName: "question",
+      defaultScope: {
+        where: {
+          deletedAt: null,
+        },
+      },
     }
-}, {
-    timestamps: true
-})
+  );
+  Question.associate = (models) => {
+    Question.belongsTo(models.User, {
+      foreignKey: "userId",
+      as: "user",
+    });
 
-module.exports = model("Question", Question);
+    Question.belongsTo(models.User, {
+      foreignKey: "askerUserId",
+      as: "asker",
+    });
+    Question.belongsToMany(models.Post, {
+      foreignKey: "questionId",
+      through: models.PostQuestion,
+      otherKey: "postId",
+      as: "post",
+    });
+  };
+
+  return Question;
+};

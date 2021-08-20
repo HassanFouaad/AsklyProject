@@ -1,26 +1,36 @@
-const {
-    Question
-} = require("../../../../../models")
+const { Question, User, Post } = require("../../../../../models");
+const { Op } = require("sequelize");
+const paginationwithCondition = require("../../../../shared/pagination");
+const viewMySentQuestionsService = async ({ user, query }) => {
+  let dbQuery = {
+    where: { askerUserId: user.id, answer: { [Op.ne]: null } },
+    order: [["createdAt", "desc"]],
+    include: [
+      {
+        model: User,
+        as: "asker",
+        attributes: ["id", "firstName", "lastname", "image", "username"],
+        required: false,
+      },
+      {
+        model: User,
+        as: "user",
+        attributes: ["id", "firstName", "lastname", "image", "username"],
+        required: false,
+      },
+      {
+        model: Post,
+        as: "post",
+        required: false,
+      },
+    ],
+  };
 
-const PaginationHelper = require('../../../../shared/pagination')
-const viewMySentQuestionsService = async ({
-    user,
-    query
-}) => {
-    let questions = await Question.find({
-        questionUser: user.id,
-        answer: {
-            $exists: true
-        }
-    }, null, new PaginationHelper(query)).populate({
-        path: 'user',
-        select: 'firstName lastName image'
-    }).sort({
-        createdAt: -1
-    })
-    return {
-        data: questions
-    }
-}
+  let questions = await paginationwithCondition(Question, { query }, dbQuery);
 
-module.exports = viewMySentQuestionsService
+  return {
+    data: questions.paginated,
+  };
+};
+
+module.exports = viewMySentQuestionsService;

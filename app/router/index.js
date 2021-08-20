@@ -1,20 +1,22 @@
-const router = require('express').Router()
+const router = require("express").Router();
+const { authRoute, authRouter } = require("../api/Auth/router");
 const {
-    authRoute,
-    authRouter
-} = require("../api/Auth/router");
-const {
-    profileBaseRouter,
-    profileBaseRoute
-} = require('../api/Profile/router');
+  profileBaseRouter,
+  profileBaseRoute,
+} = require("../api/Profile/router");
 
 const {
-    questionBaseRouter,
-    questionBaseRoute
-} = require('../api/Question/router');
+  questionBaseRouter,
+  questionBaseRoute,
+} = require("../api/Question/router");
 
-router.use(authRoute, authRouter)
-router.use(profileBaseRoute, profileBaseRouter)
-router.use(questionBaseRoute, questionBaseRouter)
+const { postBaseRoute, postBaseRouter } = require("../api/Post/router");
+const { chatBaseRoute, chatBaseRouter } = require("../api/Chat/router");
 
-module.exports = router
+router.use(authRoute, authRouter);
+router.use(profileBaseRoute, profileBaseRouter);
+router.use(questionBaseRoute, questionBaseRouter);
+router.use(postBaseRoute, postBaseRouter);
+router.use(chatBaseRoute, chatBaseRouter);
+
+module.exports = router;

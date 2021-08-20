@@ -1,38 +1,27 @@
-const {
-    Question
-} = require("../../../../../models")
-const userFinder = require("../../../../shared/userFinder")
+const { Question } = require("../../../../../models");
+const userFinder = require("../../../../shared/userFinder");
 
-const sendQuestionService = async ({
-    user,
-    body
-}) => {
-    const {
-        userId,
-        text,
-        annonymous
-    } = body
+const sendQuestionService = async ({ user, body }) => {
+  const { userId, text, annonymous } = body;
 
-    const userOfQuestion = await userFinder.findById(userId)
-    if (!userOfQuestion) return {
-        error: "No users found",
-        status: 404
-    }
-
-    let question = await Question.create({
-        user: userOfQuestion.id,
-        questionUser: user.id,
-        text,
-        annonymous
-    })
-    question = await question.populate({
-        path: "user",
-        select: 'firstName lastName image'
-    }).execPopulate()
+  const userOfQuestion = await userFinder.findById(userId);
+  if (!userOfQuestion)
     return {
-        message: "Your question has been sent",
-        data: question
-    }
-}
+      error: "No users found",
+      status: 404,
+    };
 
-module.exports = sendQuestionService
+  let question = await Question.create({
+    userId: userOfQuestion.id,
+    askerUserId: user.id,
+    text,
+    annonymous,
+  });
+
+  return {
+    message: "Your question has been sent",
+    data: question,
+  };
+};
+
+module.exports = sendQuestionService;

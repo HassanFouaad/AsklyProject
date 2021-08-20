@@ -1,25 +1,25 @@
-const express = require('express')
-const helmet = require('helmet')
-const cors = require('cors')
-const router = require('./router')
-const morgan = require('morgan')
-const {
-    errorHandler
-} = require('./middlewares')
-const app = express()
+const express = require("express");
+const helmet = require("helmet");
+const cors = require("cors");
+const router = require("./router");
+const morgan = require("morgan");
+const compression = require("compression");
+const { errorHandler } = require("./middlewares");
+const app = express();
 
-app.set('trust proxy', true)
-
-
+app.set("trust proxy", true);
 
 //Middlewares
-app.use(morgan('dev'))
-app.use(express.json({
-    limit: "50mb"
-}))
-app.use(helmet())
-app.use(cors())
+app.use(morgan("dev"));
+app.use(compression());
+app.use(
+  express.json({
+    limit: "50mb",
+  })
+);
+app.use(helmet());
+app.use(cors());
 
-app.use('/api', router)
-app.use(errorHandler)
-module.exports = app
+app.use("/api", router);
+app.use(errorHandler);
+module.exports = app;

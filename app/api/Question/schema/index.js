@@ -1,25 +1,24 @@
-const Joi = require('joi')
-Joi.objectId = require('joi-objectid')(Joi)
+const Joi = require("joi");
+Joi.objectId = require("joi-objectid")(Joi);
 
 exports.sendQuestionSchema = {
-    userId: Joi.objectId().required(),
-    text: Joi.string().max(5000).required(),
-    annonymous: Joi.boolean().required(),
-
-}
+  userId: Joi.number().integer().positive().required(),
+  text: Joi.string().max(5000).required(),
+  annonymous: Joi.boolean().required(),
+};
 
 exports.viewMyQuestionsSchema = {
-    page: Joi.number().integer().positive().optional(),
-    limit: Joi.number().integer().positive().optional(),
-    answerd: Joi.boolean().required(),
-}
+  page: Joi.number().integer().positive().optional(),
+  limit: Joi.number().integer().positive().optional(),
+  answerd: Joi.boolean().required(),
+};
 
 exports.viewMySentQuestionsSchema = {
-    page: Joi.number().integer().positive().optional(),
-    limit: Joi.number().integer().positive().optional(),
-}
+  page: Joi.number().integer().positive().optional(),
+  limit: Joi.number().integer().positive().optional(),
+};
 
 exports.answerQuestionSchema = {
-    questionId: Joi.objectId().required(),
-    answer: Joi.string().max(50000).required(),
-}
+  questionId: Joi.number().integer().positive().required(),
+  answer: Joi.string().max(50000).required(),
+};

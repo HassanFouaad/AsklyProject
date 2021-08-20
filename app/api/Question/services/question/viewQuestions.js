@@ -1,33 +1,51 @@
-const {
-    Question
-} = require("../../../../../models")
+const { Op } = require("sequelize");
+const { Question, User } = require("../../../../../models");
 
-const PaginationHelper = require('../../../../shared/pagination')
-const viewMyQuestionsService = async ({
-    user,
-    query
-}) => {
-    let questions = await Question.find({
-        user: user.id,
-        answer: {
-            $exists: query.answerd
-        }
-    }, null, new PaginationHelper(query)).populate({
-        path: 'questionUser',
-        select: 'firstName lastName image'
-    }).sort({
-        createdAt: -1
+const paginationwithCondition = require("../../../../shared/pagination");
+const viewMyQuestionsService = async ({ user, query }) => {
+  let dbOptions = {
+    order: [["createdAt", "desc"]],
+    where: {
+      userId: user.id,
+    },
+    include: [
+      {
+        model: User,
+        as: "asker",
+        attributes: ["id", "firstName", "lastname", "image", "username"],
+      },
+      {
+        model: User,
+        as: "user",
+        attributes: ["id", "firstName", "lastname", "image", "username"],
+      },
+    ],
+  };
+
+  if (typeof query.answerd == "undefined") query.answerd = false;
+
+  query.answerd = JSON.parse(query.answerd);
+
+  if (query.answerd) dbOptions.where["answer"] = { [Op.ne]: null };
+  else dbOptions.where["answer"] = { [Op.eq]: null };
+
+  let questions = await paginationwithCondition(Question, { query }, dbOptions);
+
+  questions.paginated.result = await Promise.all(
+    questions.paginated.result.map((question) => {
+      question = question.toJSON();
+      if (question.annonymous) {
+        delete question.asker;
+        delete question.askerUserId;
+      }
+      return question;
     })
+  );
 
-    questions = await Promise.all(
-        questions.map((question) => {
-            if (question.annonymous) question.questionUser = undefined
-            return question
-        })
-    )
-    return {
-        data: questions
-    }
-}
+  return {
+    data: questions.paginated,
+    message: "Success",
+  };
+};
 
-module.exports = viewMyQuestionsService
+module.exports = viewMyQuestionsService;
