@@ -7,11 +7,11 @@ if (!envFound) {
 
 module.exports = {
   development: {
-    username: process.env.DB_DEV_USERNAME,
-    password: process.env.DB_DEV_PASSWORD,
-    database: process.env.DB_DEV_NAME,
-    host: process.env.DB_DEV_HOST,
-    port: process.env.DB_DEV_PORT,
+    username: process.env.POSTGRESQL_ADDON_USER,
+    password: process.env.POSTGRESQL_ADDON_PASSWORD,
+    database: process.env.POSTGRESQL_ADDON_DB,
+    host: process.env.POSTGRESQL_ADDON_HOST,
+    port: process.env.POSTGRESQL_ADDON_PORT,
     dialect: "postgres",
     ssl:
       process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test",
