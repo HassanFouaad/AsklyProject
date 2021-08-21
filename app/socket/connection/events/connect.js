@@ -2,7 +2,7 @@ const { devLogger } = require("../../../../core/debug");
 
 const joinConnection = async (socket, socketServer) => {
   const { userData } = socket;
-  devLogger("User Connected", userData);
+  devLogger("User Connected");
   let user = userData;
   if (user) {
     await socketServer.of("/").adapter.remoteJoin(socket.id, `${user.id}`);

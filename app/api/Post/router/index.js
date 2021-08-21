@@ -1,7 +1,15 @@
 const router = require("express").Router();
 const { inputValidator, isAuthenticated } = require("../../../middlewares");
-const { createPostSchema, listPostSchema } = require("../schema");
-const { createPostController, listPostController } = require("../controller");
+const {
+  createPostSchema,
+  listPostSchema,
+  deletePostSchema,
+} = require("../schema");
+const {
+  createPostController,
+  listPostController,
+  deletePostController,
+} = require("../controller");
 
 const routes = {
   base: "/post",
@@ -16,6 +24,12 @@ router.post(
 );
 
 router.get(routes.root, inputValidator(listPostSchema), listPostController);
+router.delete(
+  routes.root,
+  isAuthenticated(),
+  inputValidator(deletePostSchema),
+  deletePostController
+);
 
 module.exports = {
   postBaseRoute: routes.base,

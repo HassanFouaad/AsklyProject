@@ -1,5 +1,6 @@
 const express = require("express");
 const helmet = require("helmet");
+const multer = require("multer");
 const cors = require("cors");
 const router = require("./router");
 const morgan = require("morgan");
@@ -11,6 +12,7 @@ app.set("trust proxy", true);
 
 //Middlewares
 app.use(morgan("dev"));
+app.use(multer().any());
 app.use(compression());
 app.use(
   express.json({

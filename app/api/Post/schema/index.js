@@ -10,3 +10,7 @@ exports.listPostSchema = {
   page: Joi.number().integer().positive().optional(),
   limit: Joi.number().integer().positive().optional(),
 };
+
+exports.deletePostSchema = {
+  postId: Joi.number().integer().positive().required(),
+};

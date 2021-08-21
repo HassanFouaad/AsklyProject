@@ -1,6 +1,6 @@
 const { Post, Question, User } = require("../../../../models");
 const paginationwithCondition = require("../../../shared/pagination");
-
+const getFileFromAWS = require("../../../shared/AWS/getFile");
 module.exports = listPostService = async ({ user, query }) => {
   let { userId, timeLine } = query;
   let dbQuery = {
@@ -49,14 +49,17 @@ module.exports = listPostService = async ({ user, query }) => {
   let { paginated } = await paginationwithCondition(Post, { query }, dbQuery);
 
   paginated.result = await Promise.all(
-    paginated.result.map((p) => {
+    paginated.result.map(async (p) => {
       p = p.toJSON();
+      p.user.image = await getFileFromAWS(p.user.image);
       if (p.question) {
         let question = p.question[0];
         if (question) {
           if (question.annonymous == true) {
             delete question.asker;
             delete question.askerUserId;
+          } else {
+            question.asker.image = await getFileFromAWS(question.asker.image);
           }
         }
         p.question = question || {};

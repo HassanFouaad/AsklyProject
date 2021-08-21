@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
 const { Question, User } = require("../../../../../models");
-
+const getFileFromAWS = require("../../../../shared/AWS/getFile");
 const paginationwithCondition = require("../../../../shared/pagination");
 const viewMyQuestionsService = async ({ user, query }) => {
   let dbOptions = {
@@ -32,11 +32,14 @@ const viewMyQuestionsService = async ({ user, query }) => {
   let questions = await paginationwithCondition(Question, { query }, dbOptions);
 
   questions.paginated.result = await Promise.all(
-    questions.paginated.result.map((question) => {
+    questions.paginated.result.map(async (question) => {
       question = question.toJSON();
       if (question.annonymous) {
         delete question.asker;
         delete question.askerUserId;
+      } else {
+        question.asker.image = await getFileFromAWS(question.asker.image);
+        question.user.image = await getFileFromAWS(question.user.image);
       }
       return question;
     })

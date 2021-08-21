@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 const { Chat, ChatMessage, User } = require("../../../../models");
+const getFileFromAWS = require("../../../shared/AWS/getFile");
 module.exports = sendMessageService = async ({ user, body }) => {
   const { userId, message } = body;
   const { id: senderId } = user;
@@ -33,6 +34,8 @@ module.exports = sendMessageService = async ({ user, body }) => {
       receiverId: userId,
     });
     chat = chat.toJSON();
+    chat.creator.image = await getFileFromAWS(chat.creator.image);
+    chat.receiver.image = await getFileFromAWS(chat.receiver.image);
   } else {
     await chat.update({ lastMessage: message });
   }
@@ -49,6 +52,8 @@ module.exports = sendMessageService = async ({ user, body }) => {
     username: user.username,
     image: user.image,
   };
+  newMessage.sender.image = await getFileFromAWS(newMessage.sender.image);
+
   return {
     data: {
       chat,

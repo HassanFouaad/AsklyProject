@@ -1,6 +1,7 @@
 const { Question, User, Post } = require("../../../../../models");
 const { Op } = require("sequelize");
 const paginationwithCondition = require("../../../../shared/pagination");
+const getFileFromAWS = require("../../../../shared/AWS/getFile");
 const viewMySentQuestionsService = async ({ user, query }) => {
   let dbQuery = {
     where: { askerUserId: user.id, answer: { [Op.ne]: null } },
@@ -27,7 +28,13 @@ const viewMySentQuestionsService = async ({ user, query }) => {
   };
 
   let questions = await paginationwithCondition(Question, { query }, dbQuery);
-
+  questions.paginated.result = await Promise.all(
+    questions.paginated.result.map(async (q) => {
+      q.user.image = await getFileFromAWS(q.user.image);
+      q.asker.image = await getFileFromAWS(q.asker.image);
+      return q;
+    })
+  );
   return {
     data: questions.paginated,
   };

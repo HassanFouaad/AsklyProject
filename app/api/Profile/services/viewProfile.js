@@ -1,6 +1,7 @@
 const userFinder = require("../../../shared/userFinder");
 const { Question } = require("../../../../models");
 const { Op } = require("sequelize");
+const getFileFromAWS = require("../../../shared/AWS/getFile");
 const viewProfileService = async ({ query }) => {
   const { userId, username } = query;
   let user;
@@ -17,11 +18,11 @@ const viewProfileService = async ({ query }) => {
   let answersCount = await Question.count({
     where: { userId: user.id, answer: { [Op.ne]: null } },
   });
-  
-  user.answersCount = answersCount;
-  if(!user.image){
-    user.image ='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIbfDzNPtnPQF6u02N9c4z9QvRUPlIFGu91A&usqp=CAU'
 
+  user.answersCount = answersCount;
+  if (user.image) {
+    user.image = await getFileFromAWS(user.image);
+    console.log(user.image);
   }
   delete user.hashedPassword;
   return {
