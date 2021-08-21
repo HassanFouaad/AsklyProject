@@ -7,7 +7,7 @@ module.exports = (IO) => {
   IO.use(async (socket, next) => {
     return await authentication(socket, next);
   }).on("connection", (socket) => {
-    socketController(socket);
+    socketController(socket, IO);
     socket.on("disconnect", () => {
       socket.disconnect();
       logger("Socket User Leaved - User ID =" + socket.userData.id);

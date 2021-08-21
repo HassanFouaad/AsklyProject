@@ -54,6 +54,16 @@ module.exports = function (sequelize, DataTypes) {
       },
     }
   );
+  ChatMessage.associate = (models) => {
+    ChatMessage.belongsTo(models.Chat, {
+      foreignKey: "chatId",
+      as: "chat",
+    });
 
+    ChatMessage.belongsTo(models.User, {
+      foreignKey: "userId",
+      as: "sender",
+    });
+  };
   return ChatMessage;
 };

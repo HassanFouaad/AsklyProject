@@ -3,6 +3,7 @@ const Joi = require("joi");
 exports.listMyChatsSchema = {
   page: Joi.number().integer().positive().optional(),
   limit: Joi.number().integer().positive().optional(),
+  chatId: Joi.number().integer().positive().optional(),
 };
 exports.sendMessageSchema = {
   userId: Joi.number().integer().positive().required(),

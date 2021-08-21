@@ -17,7 +17,7 @@ let socketServer = io(server, {
     methods: ["GET", "POST"],
   },
 });
-socketServer.adapter(redisAdapter({ host: "localhost", port: 6379 }));
+socketServer.adapter(redisAdapter({ host: "3.20.234.9", port: 6379 }));
 connection(socketServer);
 
 connect();
