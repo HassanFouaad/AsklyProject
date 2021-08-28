@@ -6,7 +6,7 @@ exports.signUpSchema = {
     username: Joi.string().required(),
     about: Joi.string().optional(),
     email: Joi.string().email().required(),
-    mobile: Joi.string().required(),
+    mobile: Joi.string().optional(),
     password: Joi.string().required()
 }
 

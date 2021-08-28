@@ -6,7 +6,7 @@ const signUpService = async ({ body }) => {
     const { email, mobile, firstName, lastName, password, username } = body;
 
     let [mobileExists, emailExists, userNameExists] = await Promise.all([
-      userFinder.findByMobile(mobile),
+      mobile ? userFinder.findByMobile(mobile) : false  ,
       userFinder.findByEmail(email),
       userFinder.findByUsername(username),
     ]);
