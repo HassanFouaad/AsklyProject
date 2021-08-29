@@ -39,12 +39,23 @@ const getOneChat = async (query, userId) => {
     ],
   });
   chat = chat.toJSON();
-  chat.creator.image = await getFileFromAWS(chat.creator.image);
-  chat.receiver.image = await getFileFromAWS(chat.receiver.image);
+  if ((chat, creator)) {
+    if (chat.creator.image) {
+      chat.creator.image = await getFileFromAWS(chat.creator.image);
+    }
+  }
+  if (chat.receiver) {
+    if (chat.creator.image) {
+      chat.receiver.image = await getFileFromAWS(chat.receiver.image);
+    }
+  }
 
   paginated.result = await Promise.all(
     paginated.result.map(async (chat) => {
-      chat.sender.image = await getFileFromAWS(chat.sender.image);
+      if (chat.sender) {
+        if (chat.sender.image)
+          chat.sender.image = await getFileFromAWS(chat.sender.image);
+      }
       return chat;
     })
   );
@@ -80,8 +91,14 @@ module.exports = listMyChatsService = async ({ user, query }) => {
     let { paginated } = await paginationwithCondition(Chat, { query }, dbQuery);
     paginated.result = await Promise.all(
       paginated.result.map(async (chat) => {
-        chat.creator.image = await getFileFromAWS(chat.creator.image);
-        chat.receiver.image = await getFileFromAWS(chat.receiver.image);
+        if (chat.creator) {
+          if (chat.creator.image)
+            chat.creator.image = await getFileFromAWS(chat.creator.image);
+        }
+        if (chat.receiver) {
+          if (chat.receiver.image)
+            chat.receiver.image = await getFileFromAWS(chat.receiver.image);
+        }
         return chat;
       })
     );
