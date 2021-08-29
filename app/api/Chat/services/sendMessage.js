@@ -4,9 +4,12 @@ const getFileFromAWS = require("../../../shared/AWS/getFile");
 module.exports = sendMessageService = async ({ user, body }) => {
   const { userId, message } = body;
   const { id: senderId } = user;
+
   if (senderId == userId) {
     return { error: "You cant chat yourself", status: 400 };
   }
+  let userFound = await User.findByPk(userId);
+  if (!userFound) return { error: "Invalid user id", status: 404 };
 
   let chat = await Chat.findOne({
     where: {

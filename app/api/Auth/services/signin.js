@@ -11,7 +11,8 @@ const signInService = async ({ body: { email, password } }) => {
   let user = await userFinder.findByEmail(email);
 
   if (!user) return authError;
-  if (!bcrypt.compare(password, user.hashedPassword)) return authError;
+  let compare = await bcrypt.compare(password, user.hashedPassword);
+  if (!compare) return authError;
 
   delete user.hashedPassword;
 
