@@ -1,21 +1,33 @@
 const router = require("express").Router();
-const { inputValidator, isAuthenticated } = require("../../../middlewares");
+const {
+  inputValidator,
+  isAuthenticated,
+  isGuestOrAuthenticated,
+} = require("../../../middlewares");
 const {
   createPostSchema,
   listPostSchema,
   deletePostSchema,
+  togglePostLikeSchema,
 } = require("../schema");
 const {
   createPostController,
   listPostController,
   deletePostController,
+  togglePostLikeController,
 } = require("../controller");
 
 const routes = {
   base: "/post",
   root: "/",
+  like: "/like",
 };
-
+router.put(
+  routes.like,
+  isAuthenticated(),
+  inputValidator(togglePostLikeSchema),
+  togglePostLikeController
+);
 router.post(
   routes.root,
   isAuthenticated(),
@@ -23,7 +35,12 @@ router.post(
   createPostController
 );
 
-router.get(routes.root, inputValidator(listPostSchema), listPostController);
+router.get(
+  routes.root,
+  isGuestOrAuthenticated(),
+  inputValidator(listPostSchema),
+  listPostController
+);
 router.delete(
   routes.root,
   isAuthenticated(),

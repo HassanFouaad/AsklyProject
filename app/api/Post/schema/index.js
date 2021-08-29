@@ -14,3 +14,7 @@ exports.listPostSchema = {
 exports.deletePostSchema = {
   postId: Joi.number().integer().positive().required(),
 };
+
+exports.togglePostLikeSchema = {
+  postId: Joi.number().integer().positive().required(),
+};

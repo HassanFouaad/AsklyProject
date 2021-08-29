@@ -57,6 +57,27 @@ module.exports = function (sequelize, DataTypes) {
       otherKey: "questionId",
       as: "question",
     });
+
+    Post.belongsToMany(models.User, {
+      foreignKey: "postId",
+      through: models.PostLike,
+      otherKey: "userId",
+      as: "likers",
+    });
+
+    Post.hasMany(models.PostLike, {
+      foreignKey: "postId",
+
+      as: "postLikes",
+    });
+
+    Post.hasMany(models.PostLike, {
+      foreignKey: "postId",
+      as: "countHelper",
+    });
+    Post.hasMany(models.PostLike, {
+      foreignKey: "postId",
+    });
   };
 
   return Post;

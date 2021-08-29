@@ -24,6 +24,25 @@ const isAuthenticated = () => async (req, res, next) => {
   }
 };
 
+const isGuestOrAuthenticated = () => async (req, res, next) => {
+  try {
+    let token = req.headers["authorization"];
+    if (!token) {
+      return next();
+    }
+    let payload = await verify(token, JWTSecret);
+    req.user = payload;
+    return next();
+  } catch (error) {
+    prodLogger.error(error);
+    return res.json({
+      error: "Access Denied",
+      status: 403,
+    });
+  }
+};
+
 module.exports = {
   isAuthenticated,
+  isGuestOrAuthenticated,
 };
