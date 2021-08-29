@@ -34,8 +34,16 @@ module.exports = sendMessageService = async ({ user, body }) => {
       receiverId: userId,
     });
     chat = chat.toJSON();
-    chat.creator.image = await getFileFromAWS(chat.creator.image);
-    chat.receiver.image = await getFileFromAWS(chat.receiver.image);
+    if (chat.creator) {
+      if (chat.creator.image) {
+        chat.creator.image = await getFileFromAWS(chat.creator.image);
+      }
+    }
+    if (chat.receiver) {
+      if (chat.receiver.image) {
+        chat.receiver.image = await getFileFromAWS(chat.receiver.image);
+      }
+    }
   } else {
     await chat.update({ lastMessage: message });
   }
