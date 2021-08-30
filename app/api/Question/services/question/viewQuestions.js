@@ -38,8 +38,13 @@ const viewMyQuestionsService = async ({ user, query }) => {
         delete question.asker;
         delete question.askerUserId;
       } else {
-        question.asker.image = await getFileFromAWS(question.asker.image);
-        question.user.image = await getFileFromAWS(question.user.image);
+        if (question.asker)
+          if (question.asker.image)
+            question.asker.image = await getFileFromAWS(question.asker.image);
+
+        if (question.user)
+          if (question.user.image)
+            question.user.image = await getFileFromAWS(question.user.image);
       }
       return question;
     })

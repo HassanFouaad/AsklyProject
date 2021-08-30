@@ -30,8 +30,13 @@ const viewMySentQuestionsService = async ({ user, query }) => {
   let questions = await paginationwithCondition(Question, { query }, dbQuery);
   questions.paginated.result = await Promise.all(
     questions.paginated.result.map(async (q) => {
-      q.user.image = await getFileFromAWS(q.user.image);
-      q.asker.image = await getFileFromAWS(q.asker.image);
+      if (q.asker)
+        if (q.asker.image) q.asker.image = await getFileFromAWS(q.asker.image);
+
+      if (q.user)
+        if (q.user.image)
+          q.user.image = await getFileFromAWS(question.user.image);
+
       return q;
     })
   );
