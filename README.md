@@ -9,4 +9,4 @@
 
 
 ### Frontend Repo
-- https://github.com/HassanFouaad/AsklyProject
+- https://github.com/HassanFouaad/askly-client
